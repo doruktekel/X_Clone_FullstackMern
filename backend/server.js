@@ -4,6 +4,7 @@ import { v2 as cloudinary } from "cloudinary";
 
 import authRouter from "./routes/auth.routes.js";
 import userRouter from "./routes/user.routes.js";
+import postRouter from "./routes/post.routes.js";
 
 import { envVariables } from "./utils/env/envVariables.js";
 import { connectDatabase } from "./database/connectDatabase.js";
@@ -23,6 +24,7 @@ app.use(cookieParser());
 
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/user", userRouter);
+app.use("/api/v1/post", postRouter);
 
 app.listen(PORT, (req, res) => {
   try {
