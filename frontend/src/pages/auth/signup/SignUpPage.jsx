@@ -7,6 +7,8 @@ import { MdOutlineMail } from "react-icons/md";
 import { FaUser } from "react-icons/fa";
 import { MdPassword } from "react-icons/md";
 import { MdDriveFileRenameOutline } from "react-icons/md";
+import { useMutation } from "@tanstack/react-query";
+import toast from "react-hot-toast";
 
 const SignUpPage = () => {
   const [formData, setFormData] = useState({
@@ -16,18 +18,39 @@ const SignUpPage = () => {
     password: "",
   });
 
+  const {
+    mutate: signupMutation,
+    isPending,
+    isError,
+    error,
+  } = useMutation({
+    mutationFn: async ({ email, userName, fullName, password }) => {
+      const res = await fetch("/api/v1/auth/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, userName, fullName, password }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to create user");
+      console.log(data);
+      return data;
+    },
+    onSuccess: () => {
+      toast.success("User created successfully");
+    },
+  });
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(formData);
+    signupMutation(formData);
   };
 
   const handleInputChange = (e) => {
     const { value, name } = e.target;
-
     setFormData({ ...formData, [name]: value });
   };
-
-  const isError = false;
 
   return (
     <div className="max-w-screen-xl mx-auto flex h-screen px-10">
@@ -59,9 +82,9 @@ const SignUpPage = () => {
                 type="text"
                 className="grow "
                 placeholder="Username"
-                name="username"
+                name="userName"
                 onChange={handleInputChange}
-                value={formData.username}
+                value={formData.userName}
               />
             </label>
             <label className="input input-bordered rounded flex items-center gap-2 flex-1">
@@ -87,10 +110,13 @@ const SignUpPage = () => {
               value={formData.password}
             />
           </label>
-          <button className="btn rounded-full btn-primary text-white">
-            Sign up
+          <button
+            className="btn rounded-full btn-primary text-white"
+            disabled={isPending}
+          >
+            {isPending ? "Loading..." : "Sign up"}
           </button>
-          {isError && <p className="text-red-500">Something went wrong</p>}
+          {isError && <p className="text-red-500">{error.message}</p>}
         </form>
         <div className="flex flex-col lg:w-2/3 gap-2 mt-4">
           <p className="text-white text-lg">Already have an account?</p>
