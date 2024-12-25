@@ -2,9 +2,9 @@ import { User } from "../models/user.model.js";
 import { comparePassword, hashPassword } from "../utils/pass/pass.js";
 import { generateTokenAndCookie } from "../utils/token/generateTokenAndCookie.js";
 
-const register = async (req, res) => {
+const signup = async (req, res) => {
   try {
-    const { fullName, password, email, userName } = req.body;
+    const { email, userName, fullName, password } = req.body;
 
     if (!fullName || !password || !email || !userName) {
       return res.status(400).json({ error: "Please fill all the blanks" });
@@ -51,7 +51,7 @@ const register = async (req, res) => {
 
 const login = async (req, res) => {
   try {
-    const { password, userName } = req.body;
+    const { userName, password } = req.body;
 
     if (!password || !userName) {
       return res.status(400).json("You should fill all the blanks");
@@ -100,4 +100,4 @@ const getMe = async (req, res) => {
   }
 };
 
-export { register, login, logout, getMe };
+export { signup, login, logout, getMe };

@@ -1,28 +1,53 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { MdPassword } from "react-icons/md";
+import { MdOutlineMail } from "react-icons/md";
+
+import toast from "react-hot-toast";
 
 import XSvg from "../../../components/svgs/X";
 
-import { MdOutlineMail } from "react-icons/md";
-import { MdPassword } from "react-icons/md";
-
 const LoginPage = () => {
   const [formData, setFormData] = useState({
-    username: "",
+    userName: "",
     password: "",
+  });
+
+  const queryClient = useQueryClient();
+
+  const {
+    error,
+    isError,
+    isPending,
+    mutate: loginMutation,
+  } = useMutation({
+    mutationFn: async ({ userName, password }) => {
+      const res = await fetch("/api/v1/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userName, password }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to login");
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["authUser"]);
+    },
   });
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(formData);
+    loginMutation(formData);
   };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
-
-  const isError = false;
 
   return (
     <div className="max-w-screen-xl mx-auto flex h-screen">
@@ -39,9 +64,9 @@ const LoginPage = () => {
               type="text"
               className="grow"
               placeholder="username"
-              name="username"
+              name="userName"
               onChange={handleInputChange}
-              value={formData.username}
+              value={formData.userName}
             />
           </label>
 
@@ -56,10 +81,13 @@ const LoginPage = () => {
               value={formData.password}
             />
           </label>
-          <button className="btn rounded-full btn-primary text-white">
-            Login
+          <button
+            className="btn rounded-full btn-primary text-white"
+            disabled={isPending}
+          >
+            {isPending ? "Loading..." : "Login"}
           </button>
-          {isError && <p className="text-red-500">Something went wrong</p>}
+          {isError && <p className="text-red-500">{error.message}</p>}
         </form>
         <div className="flex flex-col gap-2 mt-4">
           <p className="text-white text-lg">{"Don't"} have an account?</p>

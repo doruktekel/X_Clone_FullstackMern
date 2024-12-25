@@ -3,13 +3,13 @@ import {
   getMe,
   login,
   logout,
-  register,
+  signup,
 } from "../controllers/auth.controllers.js";
 import { protectRoute } from "../middlewares/protectRoute.js";
 
 const router = express.Router();
 
-router.post("/register", register);
+router.post("/signup", signup);
 router.post("/login", login);
 router.post("/logout", logout);
 
