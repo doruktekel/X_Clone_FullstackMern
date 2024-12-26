@@ -36,7 +36,7 @@ const deletePost = async (req, res) => {
     const post = await Post.findById(id);
 
     if (!post) {
-      return res.status(404).json("Post not found");
+      return res.status(404).json({ error: "Post not found" });
     }
 
     // 1 st way
@@ -46,7 +46,7 @@ const deletePost = async (req, res) => {
     // }
 
     if (!post.user.equals(req.user._id)) {
-      return res.status(403).json("You can just delete your posts");
+      return res.status(403).json({ error: "You can just delete your posts" });
     }
 
     // 2 nd way
