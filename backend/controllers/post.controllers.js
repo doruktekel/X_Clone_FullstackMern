@@ -9,7 +9,9 @@ const createPost = async (req, res) => {
     let img;
 
     if (!text && !image) {
-      return res.status(400).json("Image or text should be");
+      return res
+        .status(400)
+        .json({ error: "You should write something or upload an image" });
     }
 
     if (image) {
@@ -26,7 +28,7 @@ const createPost = async (req, res) => {
     res.status(201).json(newPost);
   } catch (error) {
     console.log("Error in createPost func", error.message);
-    res.status(500).json("Internal server error");
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 
