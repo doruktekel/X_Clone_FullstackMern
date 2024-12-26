@@ -15,27 +15,21 @@ const Posts = ({ feedType }) => {
     }
   };
 
-  const postUrl = getPostUrl();
-
   const {
     data: posts,
     isLoading,
-    isError,
-    error,
-    refetch,
     isRefetching,
   } = useQuery({
-    queryKey: ["posts"],
+    queryKey: ["posts", feedType],
     queryFn: async () => {
+      const postUrl = getPostUrl();
       const res = await fetch(postUrl);
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Something went wrong!");
       return data;
     },
   });
-  useEffect(() => {
-    refetch();
-  }, [feedType]);
+
   return (
     <>
       {(isLoading || isRefetching) && (
