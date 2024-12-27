@@ -54,7 +54,7 @@ const login = async (req, res) => {
     const { userName, password } = req.body;
 
     if (!password || !userName) {
-      return res.status(400).json("You should fill all the blanks");
+      return res.status(400).json({ error: "Please fill all the blanks" });
     }
 
     const user = await User.findOne({ userName });

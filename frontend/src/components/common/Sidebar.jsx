@@ -21,7 +21,7 @@ const Sidebar = () => {
       if (!res.ok) throw new Error(data.error || "Logout failed");
       return data;
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
       queryClient.invalidateQueries(["authUser"]);
     },
     onError: (data) => {

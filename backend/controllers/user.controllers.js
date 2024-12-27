@@ -129,7 +129,7 @@ const getSuggestedUser = async (req, res) => {
     res.status(200).json(suggestedUsers);
   } catch (error) {
     console.log("Error in getSuggestedUser func", error.message);
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 

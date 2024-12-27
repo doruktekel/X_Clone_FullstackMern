@@ -6,6 +6,9 @@ import { User } from "../models/user.model.js";
 const createPost = async (req, res) => {
   try {
     const { text, image } = req.body;
+    console.log("text", text);
+    console.log("image", image);
+
     let img;
 
     if (!text && !image) {
@@ -57,8 +60,8 @@ const deletePost = async (req, res) => {
       const imgId = post.image.split("/").pop().split(".")[0];
       await cloudinary.uploader.destroy(imgId);
 
-      // bunuda dene ?
-      //    await cloudinary.v2.uploader.destroy(post.image.public_id);
+      // bunuda dene ?  olmadi
+      // await cloudinary.uploader.destroy(post.image.public_id);
     }
 
     const deletedPost = await Post.findByIdAndDelete(post._id);

@@ -4,8 +4,6 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { MdPassword } from "react-icons/md";
 import { MdOutlineMail } from "react-icons/md";
 
-import toast from "react-hot-toast";
-
 import XSvg from "../../../components/svgs/X";
 
 const LoginPage = () => {
