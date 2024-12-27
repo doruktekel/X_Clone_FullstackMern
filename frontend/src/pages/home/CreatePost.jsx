@@ -7,7 +7,7 @@ import toast from "react-hot-toast";
 
 const CreatePost = () => {
   const [text, setText] = useState("");
-  const [img, setImg] = useState(null);
+  const [image, setImage] = useState(null);
 
   const { data: authUser } = useQuery({ queryKey: ["authUser"] });
 
@@ -19,13 +19,13 @@ const CreatePost = () => {
     error,
     isPending,
   } = useMutation({
-    mutationFn: async ({ text, img }) => {
+    mutationFn: async ({ text, image }) => {
       const res = await fetch("/api/v1/post/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ text, img }),
+        body: JSON.stringify({ text, image }),
       });
 
       const data = await res.json();
@@ -36,7 +36,7 @@ const CreatePost = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["posts"] });
       setText("");
-      setImg(null);
+      setImage(null);
       toast.success("Post created successfully");
     },
   });
@@ -44,7 +44,7 @@ const CreatePost = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    createMutation({ text, img });
+    createMutation({ text, image });
   };
 
   const handleImgChange = (e) => {
@@ -53,7 +53,7 @@ const CreatePost = () => {
     if (file) {
       const reader = new FileReader();
       reader.onload = () => {
-        setImg(reader.result);
+        setImage(reader.result);
       };
       reader.readAsDataURL(file);
     }
@@ -73,17 +73,17 @@ const CreatePost = () => {
           value={text}
           onChange={(e) => setText(e.target.value)}
         />
-        {img && (
+        {image && (
           <div className="relative w-72 mx-auto">
             <IoCloseSharp
               className="absolute top-2 right-2 text-white bg-gray-800 rounded-full w-5 h-5 cursor-pointer"
               onClick={() => {
-                setImg(null);
+                setImage(null);
                 imgRef.current.value = null;
               }}
             />
             <img
-              src={img}
+              src={image}
               className="w-full mx-auto h-72 object-contain rounded"
             />
           </div>
@@ -112,7 +112,7 @@ const CreatePost = () => {
             {isPending ? "Posting..." : "Post"}
           </button>
         </div>
-        {isError && <div className="text-red-500">{error}</div>}
+        {isError && <div className="text-red-500">{error.message}</div>}
       </form>
     </div>
   );
