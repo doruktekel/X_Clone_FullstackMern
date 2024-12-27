@@ -6,8 +6,6 @@ import { User } from "../models/user.model.js";
 const createPost = async (req, res) => {
   try {
     const { text, image } = req.body;
-    console.log("text", text);
-    console.log("image", image);
 
     let img;
 
