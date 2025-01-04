@@ -247,7 +247,7 @@ const getUserPosts = async (req, res) => {
     const user = await User.findOne({ userName: username });
 
     if (!user) {
-      return res.status(404).json("User not found");
+      return res.status(404).json({ error: "User not found" });
     }
 
     const posts = await Post.find({ user: user._id })
@@ -258,7 +258,7 @@ const getUserPosts = async (req, res) => {
     res.status(200).json(posts);
   } catch (error) {
     console.log("Error in getUserPosts func", error.message);
-    res.status(500).json("Internal server error");
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 
