@@ -24,3 +24,9 @@ export const timeAgo = (createdAt) => {
     return `${Math.floor(duration.asWeeks())}w`; // hafta
   }
 };
+
+export const joinedDate = (createdAt) => {
+  const date = new Date(createdAt); // Gelen tarihi Date objesine dönüştür
+  const options = { year: "numeric", month: "long" }; // İstediğimiz formatı ayarla
+  return date.toLocaleDateString("en-US", options);
+};
