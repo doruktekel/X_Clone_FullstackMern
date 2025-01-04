@@ -76,13 +76,13 @@ const commentPost = async (req, res) => {
     const { id } = req.params;
 
     if (!text) {
-      return res.status(400).json("You should write something");
+      return res.status(400).json({ error: "You should write something" });
     }
 
     const post = await Post.findById(id);
 
     if (post.user.equals(req.user._id)) {
-      return res.status(403).json("You can not comment your posts");
+      return res.status(403).json({ error: "You can not comment your posts" });
     }
 
     const comment = {
@@ -117,7 +117,7 @@ const likeUnlikePost = async (req, res) => {
     let newPost;
 
     if (post.user.equals(req.user._id)) {
-      return res.status(403).json("You can not like/unlike your posts");
+      return res.status(403).json({ error: "You can not like your posts" });
     }
 
     const liked = post.likes.includes(req.user._id);
@@ -174,7 +174,8 @@ const likeUnlikePost = async (req, res) => {
       });
     }
 
-    res.status(200).json(newPost);
+    const updatedLikes = newPost.likes;
+    res.status(200).json(updatedLikes);
   } catch (error) {
     console.log("Error in commentPost func", error);
     res.status(500).json({ error: "Internal server error" });
