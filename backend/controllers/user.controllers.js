@@ -152,7 +152,7 @@ const updateUser = async (req, res) => {
     let password = user.password;
 
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ error: "User not found" });
     }
 
     if (
@@ -167,13 +167,13 @@ const updateUser = async (req, res) => {
     if (currentPassword && newPassword) {
       const matchPassword = await comparePassword(currentPassword, password);
       if (!matchPassword) {
-        return res.status(400).json({ message: "Passwords are incorrect" });
+        return res.status(400).json({ error: "Passwords are incorrect" });
       }
 
       if (newPassword.length < 6) {
         return res
           .status(400)
-          .json({ message: "Passwords should be min 6 character" });
+          .json({ error: "Passwords should be min 6 character" });
       }
 
       password = await hashPassword(newPassword);
@@ -191,6 +191,8 @@ const updateUser = async (req, res) => {
           console.log(error);
         });
       profileImage = uploadResult.secure_url;
+    } else {
+      profileImage = user.profileImage; // eski profil resmi kalacak
     }
 
     if (coverImage) {
@@ -205,6 +207,8 @@ const updateUser = async (req, res) => {
           console.log(error);
         });
       coverImage = uploadResult.secure_url;
+    } else {
+      coverImage = user.coverImage; // eski profil resmi kalacak
     }
 
     const updatedUser = await User.findByIdAndUpdate(
@@ -219,7 +223,7 @@ const updateUser = async (req, res) => {
         profileImage,
         coverImage,
       },
-      { new: true }
+      { new: true, runValidators: true }
     );
 
     const { password: _, ...rest } = updatedUser._doc;
@@ -227,7 +231,7 @@ const updateUser = async (req, res) => {
     return res.status(200).json(rest);
   } catch (error) {
     console.log("Error in updateUser func", error.message);
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ error: error.message });
   }
 };
 

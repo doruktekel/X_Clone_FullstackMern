@@ -2,7 +2,7 @@ import Post from "./Post";
 import PostSkeleton from "../skeletons/PostSkeleton";
 import { useQuery } from "@tanstack/react-query";
 
-const Posts = ({ feedType, username, userId }) => {
+const Posts = ({ feedType, userName, userId }) => {
   const getPostUrl = () => {
     switch (feedType) {
       case "forYou":
@@ -10,7 +10,7 @@ const Posts = ({ feedType, username, userId }) => {
       case "following":
         return "/api/v1/post/following";
       case "posts":
-        return `/api/v1/post/user/${username}`;
+        return `/api/v1/post/user/${userName}`;
       case "likes":
         return `/api/v1/post/liked/${userId}`;
       default:
@@ -23,7 +23,7 @@ const Posts = ({ feedType, username, userId }) => {
     isLoading,
     isRefetching,
   } = useQuery({
-    queryKey: ["posts", feedType, username, userId],
+    queryKey: ["posts", feedType, userName, userId],
     queryFn: async () => {
       const postUrl = getPostUrl();
       const res = await fetch(postUrl);
