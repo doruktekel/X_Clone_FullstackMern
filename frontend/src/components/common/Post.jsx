@@ -4,7 +4,7 @@ import { FaRegHeart } from "react-icons/fa";
 import { FaRegBookmark } from "react-icons/fa6";
 import { FaTrash } from "react-icons/fa";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { data, Link } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import LoadingSpinner from "./LoadingSpinner";
@@ -54,19 +54,10 @@ const Post = ({ post }) => {
       if (!res.ok) throw new Error(data.error || "Something went wrong!");
       return data;
     },
-    onSuccess: (updatedLikes) => {
-      // queryClient.invalidateQueries({ queryKey: ["posts"] });
-      // toast.success("Post liked successfully");
-      queryClient.setQueryData(["posts"], (oldData) => {
-        if (!oldData || !Array.isArray(oldData)) return oldData; // Boşsa eski veriyi döndür
-        return oldData.map((p) => {
-          if (p._id === post._id) {
-            return { ...p, likes: updatedLikes }; // Güncellenmiş like değerlerini set et
-          }
-          return p;
-        });
-      });
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
     },
+
     onError: (error) => {
       toast.error(error.message);
     },
@@ -252,7 +243,7 @@ const Post = ({ post }) => {
                     isLiked ? "text-pink-500" : "text-slate-500"
                   }`}
                 >
-                  {post.likes?.length}
+                  {post?.likes?.length}
                 </span>
               </div>
             </div>
